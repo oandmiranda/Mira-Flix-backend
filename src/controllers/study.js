@@ -1,10 +1,11 @@
-import bcrypt from 'bcrypt';
 import pkg from 'pg';
+import dotenv from 'dotenv';
 const { Pool } = pkg;
 
+dotenv.config();
 
 // Constrói a string de conexão com o postgresql manualmente
-const connectionString = 'postgresql://postgres:422618@localhost:5432/users';
+export const connectionString = 'postgresql://postgres:422618@localhost:5432/users';
 
 async function connect() {
     // Verifica se já existe uma conexão globalmente
@@ -94,32 +95,3 @@ export async function deleteCustomer (id) {
         client.release();
     }
 };
-
-export async function insertUser(user) {
-    const client = await connect();
-    const sql = "INSERT INTO users (name, email, password) VALUES ($1, $2, $3)";
-
-    try {
-        const saltRounds = 10; // número de vezes que será aplicado o processo de hashing para fortalecer a segurança
-        if (!user.password) {
-            throw new Error("Senha não fornecida");
-        }
-        const hashedPassword = await bcrypt.hash(user.password, saltRounds); // hash final
-
-        // Query para inserir o novo usuário no banco de dados
-        const result = await client.query(sql, [user.name, user.email, hashedPassword]);
-
-        console.log("Usuário criado com sucesso: ", result.rows[0]);
-
-        // Retorna o usuário criado
-        return result.rows[0];
-    } catch (error) {
-        console.error("Erro ao inserir usuário no banco de dados: ", error);
-        throw error;  // Lança o erro para que a rota capture
-    } finally {
-        client.release();  // Garante que a conexão com o banco de dados seja liberada
-    }
-};
-
-
-export default connect;
