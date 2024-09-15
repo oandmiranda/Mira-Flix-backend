@@ -8,8 +8,8 @@ router.use(express.json());
 // login
 router.post("/login", async (req, res) => {
     try {
-        const userValidado = await userLogin(req.body);
-        res.json({auth: true, userValidado});
+        const authenticatedUser = await userLogin(req.body);
+        res.json({auth: true, authenticatedUser});
     } catch (error) {
         res.status(500).json({error: "erro ao autorizar user"});
     }

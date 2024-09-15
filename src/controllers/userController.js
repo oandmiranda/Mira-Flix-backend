@@ -3,9 +3,9 @@ import jwt from 'jsonwebtoken';
 import { connect } from "../database/db.js";
 
 export async function insertUser(user) {
+    const {name, email, password} = user;
     const client = await connect();
     const sql = "INSERT INTO users (name, email, password) VALUES ($1, $2, $3)";
-    const {name, email, password} = user;
 
     try {
         const saltRounds = 10; // número de vezes que será aplicado o processo de hashing para fortalecer a segurança
@@ -30,37 +30,37 @@ export async function insertUser(user) {
 };
 
 export async function userLogin (user) {
+    const { email, password } = user;
     const client = await connect();
     const sql = "SELECT * FROM users WHERE email = $1";
     const jwtSecret = process.env.JWT_SECRET;
 
     // verifica se o email existe no banco de dados
     try {
-        const result = await client.query(sql, [user.email])
+        const result = await client.query(sql, [email])
 
         if (!result.rows.length === 0) {
             throw new Error('Email ou senha incorretos.')
         };
     
-    const usuario = result.rows[0];
+    // armazena o usuário existente
+    const existingUser = result.rows[0];
 
     // Verifica se a senha está correta
-    const senhaValida = await bcrypt.compare(user.password, usuario.password) // debugar essa linha
+    const senhaValida = await bcrypt.compare(password, existingUser.password)
 
     if (!senhaValida) {
         throw new Error('Email ou senha incorretos.')
     };
 
     // Se o email e senha estão corretos, gera um JWT
-    const token = jwt.sign({ userId: usuario.id, email: usuario.email}, jwtSecret, {expiresIn: 300});
+    const token = jwt.sign({ userId: existingUser.id, email: existingUser.email}, jwtSecret, {expiresIn: 300});
 
     // Retorna o token
     return { token };
+    
   } catch (error) {
     console.error(error);
     throw new Error('Erro ao autenticar usuário')
   }
 };
-
-
-export default connect;
