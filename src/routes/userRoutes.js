@@ -11,7 +11,7 @@ router.post("/login", async (req, res) => {
         const authenticatedUser = await userLogin(req.body);
         res.json({auth: true, authenticatedUser});
     } catch (error) {
-        res.status(500).json({error: "erro ao autorizar user"});
+        res.status(401).json({error: "erro ao autorizar user"});
     }
 });
 

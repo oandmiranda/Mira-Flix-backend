@@ -58,7 +58,7 @@ export async function userLogin (user) {
 
     // Retorna o token
     return { token };
-    
+
   } catch (error) {
     console.error(error);
     throw new Error('Erro ao autenticar usuário')

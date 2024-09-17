@@ -23,7 +23,7 @@ router.get("/clientes", async (req, res) => {
 });
 
 // cadastra um novo registro
-router.post("/cliente", async (req, res) => {
+router.post("/clientes", async (req, res) => {
     await insertCustomer(req.body);
     res.sendStatus(201); // "201" é o código que confirma que um novo registro foi realizado DO ZERO com sucesso
 });
