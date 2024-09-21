@@ -1,6 +1,9 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { connect } from "../database/db.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export async function insertUser(user) {
     const {name, email, password} = user;
@@ -33,7 +36,7 @@ export async function userLogin (user) {
     const { email, password } = user;
     const client = await connect();
     const sql = "SELECT * FROM users WHERE email = $1";
-    const jwtSecret = process.env.JWT_SECRET;
+    const secret_key = process.env.JWT_SECRET;
 
     // verifica se o email existe no banco de dados
     try {
@@ -53,8 +56,8 @@ export async function userLogin (user) {
         throw new Error('Email ou senha incorretos.')
     };
 
-    // Se o email e senha estão corretos, gera um JWT
-    const token = jwt.sign({ userId: existingUser.id, email: existingUser.email}, jwtSecret, {expiresIn: 300});
+    // Se o email e senha estão corretos, gera um token
+    const token = jwt.sign({ userId: existingUser.id, email: existingUser.email}, secret_key, {expiresIn: 30000});
 
     // Retorna o token
     return { token };
@@ -64,3 +67,40 @@ export async function userLogin (user) {
     throw new Error('Erro ao autenticar usuário')
   }
 };
+
+export function verifyToken(req, res) {
+    const token = req.headers['authorization'];
+  
+    console.log("Token recebido:", token);
+  
+    if (!token) {
+        return res.status(403).json({ message: "erro no primeiro log: token não recebido" });
+    }
+  
+    // Extrai o token após o 'Bearer'
+    const bearerToken = token.split(' ')[1];
+    if (!bearerToken) {
+        return res.status(403).json({ message: "Token não fornecido na extração do bearer" });
+    }
+
+    console.log("Bearer token extraído:", bearerToken);
+  
+    // Verifica o token
+    jwt.verify(bearerToken, process.env.JWT_SECRET, (err, decoded) => {
+        if (err) {
+            // Verifique se o erro é devido a assinatura inválida
+            if (err.name === 'JsonWebTokenError') {
+                console.error("Erro de assinatura:", err.message);
+                return res.status(403).json({ message: "Token inválido" });
+            }
+            console.error("Erro ao verificar o token:", err);
+            return res.status(403).json({ message: "Token inválido" });
+        }
+  
+        console.log("Token decodificado:", decoded);
+        req.user = decoded; // Adiciona as informações decodificadas ao objeto req
+    });
+}
+
+  
+

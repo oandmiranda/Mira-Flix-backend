@@ -1,5 +1,5 @@
 import express from 'express';
-import { insertUser, userLogin } from '../controllers/userController.js';
+import { insertUser, userLogin, verifyToken } from '../controllers/userController.js';
 
 const router = express();
 
@@ -23,6 +23,11 @@ router.post("/cadastro", async (req, res) => {
     } catch (error) {
         res.status(500).json({error: "erro ao criar user"});
     }
+});
+
+router.get('/verify_test', verifyToken, (req, res) => {
+    // Se o token for válido, o código desta rota será executado
+    res.json({ message: 'Acesso permitido à rota de categorias', user: req.user });
 });
 
 export default router;
