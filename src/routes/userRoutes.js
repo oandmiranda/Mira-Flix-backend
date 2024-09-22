@@ -5,6 +5,16 @@ const router = express();
 
 router.use(express.json());
 
+// cadastro
+router.post("/cadastro", async (req, res) => {
+    try {
+        const newUser = await insertUser(req.body);
+        res.status(201).json(newUser);
+    } catch (error) {
+        res.status(500).json({error: "erro ao criar user"});
+    }
+});
+
 // login
 router.post("/login", async (req, res) => {
     try {
@@ -15,15 +25,6 @@ router.post("/login", async (req, res) => {
     }
 });
 
-// cadastro
-router.post("/cadastro", async (req, res) => {
-    try {
-        const newUser = await insertUser(req.body);
-        res.status(201).json(newUser);
-    } catch (error) {
-        res.status(500).json({error: "erro ao criar user"});
-    }
-});
 
 router.get('/verify_test', verifyToken, (req, res) => {
     // Se o token for válido, o código desta rota será executado

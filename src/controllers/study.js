@@ -72,3 +72,38 @@ export async function deleteCustomer (id) {
         client.release();
     }
 };
+
+
+export function verifyToken(req, res) {
+    const authHeader  = req.headers['authorization'];
+  
+    console.log("Token recebido:", authHeader );
+  
+    if (!authHeader ) {
+        return res.status(403).json({ message: "token não recebido" });
+    }
+  
+    // Extrai o token após o 'bearer'
+    const token = authHeader.split(' ')[1];
+    if (!token) {
+        return res.status(403).json({ message: "Token não fornecido na extração do bearer" });
+    }
+
+    console.log("token extraído:", token);
+  
+    // check the token
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+        if (err) {
+            // Verifique se o erro é devido a assinatura inválida
+            if (err.name === 'JsonWebTokenError') {
+                console.error("Erro de assinatura:", err.message);
+                return res.status(403).json({ message: "Token inválido" });
+            }
+            console.error("Erro ao verificar o token:", err);
+            return res.status(403).json({ message: "Token inválido" });
+        }
+  
+        console.log("Token decodificado:", decoded);
+        req.user = decoded; // Adiciona as informações decodificadas ao objeto req
+    });
+}

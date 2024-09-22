@@ -60,6 +60,7 @@ export async function userLogin (user) {
     const token = jwt.sign({ userId: existingUser.id, email: existingUser.email}, secret_key, {expiresIn: 30000});
 
     // Retorna o token
+    console.log('token gerado');
     return { token };
 
   } catch (error) {
@@ -69,24 +70,24 @@ export async function userLogin (user) {
 };
 
 export function verifyToken(req, res) {
-    const token = req.headers['authorization'];
+    const authHeader  = req.headers['authorization'];
   
-    console.log("Token recebido:", token);
+    console.log("Token recebido:", authHeader );
   
-    if (!token) {
-        return res.status(403).json({ message: "erro no primeiro log: token não recebido" });
+    if (!authHeader ) {
+        return res.status(403).json({ message: "token não recebido" });
     }
   
-    // Extrai o token após o 'Bearer'
-    const bearerToken = token.split(' ')[1];
-    if (!bearerToken) {
+    // Extrai o token após o 'bearer'
+    const token = authHeader.split(' ')[1];
+    if (!token) {
         return res.status(403).json({ message: "Token não fornecido na extração do bearer" });
     }
 
-    console.log("Bearer token extraído:", bearerToken);
+    console.log("token extraído:", token);
   
-    // Verifica o token
-    jwt.verify(bearerToken, process.env.JWT_SECRET, (err, decoded) => {
+    // check the token
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
         if (err) {
             // Verifique se o erro é devido a assinatura inválida
             if (err.name === 'JsonWebTokenError') {
@@ -101,6 +102,3 @@ export function verifyToken(req, res) {
         req.user = decoded; // Adiciona as informações decodificadas ao objeto req
     });
 }
-
-  
-
