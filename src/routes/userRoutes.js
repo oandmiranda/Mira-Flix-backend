@@ -19,9 +19,9 @@ router.post("/cadastro", async (req, res) => {
 router.post("/login", async (req, res) => {
     try {
         const authenticatedUser = await userLogin(req.body);
-        res.json({auth: true, authenticatedUser});
+        res.json({auth: true, token: authenticatedUser.token});
     } catch (error) {
-        res.status(401).json({error: "erro ao autorizar user"});
+        res.status(401).json({error: "erro ao autenticar user"});
     }
 });
 

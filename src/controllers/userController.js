@@ -42,7 +42,7 @@ export async function userLogin (user) {
     try {
         const result = await client.query(sql, [email])
 
-        if (!result.rows.length === 0) {
+        if (result.rows.length === 0) {
             throw new Error('Email ou senha incorretos.')
         };
     
@@ -57,10 +57,10 @@ export async function userLogin (user) {
     };
 
     // Se o email e senha estão corretos, gera um token
-    const token = jwt.sign({ userId: existingUser.id, email: existingUser.email}, secret_key, {expiresIn: 30000});
+    const token = jwt.sign({ userId: existingUser.id, email: existingUser.email}, secret_key, {expiresIn: '1h'});
 
     // Retorna o token
-    console.log('token gerado');
+    console.log('token gerado: ', token);
     return { token };
 
   } catch (error) {
