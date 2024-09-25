@@ -57,7 +57,7 @@ export async function userLogin (user) {
     };
 
     // Se o email e senha estão corretos, gera um token
-    const token = jwt.sign({ userId: existingUser.id, email: existingUser.email}, secret_key, {expiresIn: '1h'});
+    const token = jwt.sign({ userId: existingUser.id, email: existingUser.email}, secret_key, {expiresIn: '120s'});
 
     // Retorna o token
     console.log('token gerado: ', token);
@@ -83,22 +83,22 @@ export function verifyToken(req, res) {
     if (!token) {
         return res.status(403).json({ message: "Token não fornecido na extração do bearer" });
     }
-
-    console.log("token extraído:", token);
   
     // check the token
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
         if (err) {
             // Verifique se o erro é devido a assinatura inválida
-            if (err.name === 'JsonWebTokenError') {
-                console.error("Erro de assinatura:", err.message);
-                return res.status(403).json({ message: "Token inválido" });
-            }
+            if (err.name === 'TokenExpiredError') {
+                console.log("Token expirado:", err.message);
+                return res.status(401).json({ message: "Token expirado" });
+              }
+
             console.error("Erro ao verificar o token:", err);
             return res.status(403).json({ message: "Token inválido" });
         }
   
-        console.log("Token decodificado:", decoded);
+        console.log("Token válido:", decoded);
         req.user = decoded; // Adiciona as informações decodificadas ao objeto req
+        return res.status(200).json({message: "token verificado"});
     });
 }

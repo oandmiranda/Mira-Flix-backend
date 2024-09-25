@@ -26,7 +26,7 @@ router.post("/login", async (req, res) => {
 });
 
 
-router.get('/verify_test', verifyToken, (req, res) => {
+router.post('/verify_token', verifyToken, (req, res) => {
     // Se o token for válido, o código desta rota será executado
     res.json({ message: 'Acesso permitido à rota de categorias', user: req.user });
 });
