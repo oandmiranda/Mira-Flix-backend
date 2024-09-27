@@ -64,8 +64,11 @@ export async function userLogin (user) {
     return { token };
 
   } catch (error) {
-    console.error(error);
-    throw new Error('Erro ao autenticar usuário')
+    console.error(error.message);
+    return {
+        status: 401, // Retorna um código de erro HTTP (Bad Request)
+        message: error.message || 'Erro ao autenticar usuário',
+      };
   }
 };
 

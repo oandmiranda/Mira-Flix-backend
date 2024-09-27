@@ -19,11 +19,19 @@ router.post("/cadastro", async (req, res) => {
 router.post("/login", async (req, res) => {
     try {
         const authenticatedUser = await userLogin(req.body);
-        res.json({auth: true, token: authenticatedUser.token});
+
+        // Se o login retornar um status 400, precisamos checar isso
+        if (authenticatedUser.status === 401) {
+            return res.status(401).json({ message: authenticatedUser.message });
+        }
+
+        // Caso contrário, o login foi bem-sucedido
+        res.status(200).json({ auth: true, token: authenticatedUser.token });
     } catch (error) {
-        res.status(401).json({error: "erro ao autenticar user"});
+        res.status(500).json({ message: 'Erro no servidor' });
     }
 });
+
 
 
 router.post('/verify_token', verifyToken, (req, res) => {
