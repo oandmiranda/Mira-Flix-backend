@@ -6,7 +6,7 @@ const router = express();
 router.use(express.json());
 
 // cadastro
-router.post("/cadastro", async (req, res) => {
+router.post("/signup", async (req, res) => {
     try {
         const newUser = await insertUser(req.body);
         res.status(201).json(newUser);

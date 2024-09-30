@@ -23,10 +23,18 @@ export async function insertUser(user) {
         console.log("Usuário criado com sucesso: ", newUser.rows[0]);
 
         // Retorna o usuário criado
-        return newUser.rows[0];
+        return {
+            status: 201,
+            message: "Usuário criado com sucesso",
+            user: newUser.rows[0] // opcional: retorna os dados do usuário criado
+        };
+
     } catch (error) {
         console.error("Erro ao inserir usuário no banco de dados: ", error);
-        throw error;  // Lança o erro para que a rota capture
+        return {
+            status: 400,
+            message: error.message || 'Erro ao inserir usuário no banco de dados',
+        }
     } finally {
         client.release();  // Garante que a conexão com o banco de dados seja liberada
     }
@@ -66,7 +74,7 @@ export async function userLogin (user) {
   } catch (error) {
     console.error(error.message);
     return {
-        status: 401, // Retorna um código de erro HTTP (Bad Request)
+        status: 401, // Retorna um código HTTP de 'não autorizado' 
         message: error.message || 'Erro ao autenticar usuário',
       };
   }
