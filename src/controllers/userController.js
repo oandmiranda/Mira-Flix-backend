@@ -69,7 +69,10 @@ export async function userLogin (user) {
 
     // Retorna o token
     console.log('token gerado: ', token);
-    return { token };
+    return {
+        token: token,
+        name: existingUser.name
+    };
 
   } catch (error) {
     console.error(error.message);

@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { json } from 'express';
 import { insertUser, userLogin, verifyToken } from '../controllers/userController.js';
 
 const router = express();
@@ -20,13 +20,11 @@ router.post("/login", async (req, res) => {
     try {
         const authenticatedUser = await userLogin(req.body);
 
-        // Se o login retornar um status 400, precisamos checar isso
         if (authenticatedUser.status === 401) {
             return res.status(401).json({ message: authenticatedUser.message });
         }
 
-        // Caso contrário, o login foi bem-sucedido
-        res.status(200).json({ auth: true, token: authenticatedUser.token });
+        res.status(200).json({ auth: true, token: authenticatedUser.token, name: authenticatedUser.name });
     } catch (error) {
         res.status(500).json({ message: 'Erro no servidor' });
     }
