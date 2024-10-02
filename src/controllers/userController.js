@@ -9,8 +9,18 @@ export async function insertUser(user) {
     const {name, email, password} = user;
     const client = await connect();
     const sql = "INSERT INTO users (name, email, password) VALUES ($1, $2, $3)";
+    const checkEmailQuery = "SELECT * FROM users WHERE email = $1";
+    const existingUser = await client.query(checkEmailQuery, [email]);
 
     try {
+        if(existingUser.rows.length > 0) {
+            // Se o e-mail já existe, retorna uma mensagem de erro
+            return {
+                status: 409,
+                message: 'Email já cadastrado! Tente novamente com um novo email válido.'
+            };
+        }
+
         const saltRounds = 10; // número de vezes que será aplicado o processo de hashing para fortalecer a segurança
         if (!user.password) {
             throw new Error("Senha não fornecida");
@@ -26,7 +36,7 @@ export async function insertUser(user) {
         return {
             status: 201,
             message: "Usuário criado com sucesso",
-            user: newUser.rows[0] // opcional: retorna os dados do usuário criado
+            user: newUser.rows[0] // retorna os dados do usuário criado
         };
 
     } catch (error) {
