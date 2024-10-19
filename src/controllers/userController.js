@@ -75,7 +75,7 @@ export async function userLogin (user) {
     };
 
     // Se o email e senha estão corretos, gera um token
-    const token = jwt.sign({ userId: existingUser.id, email: existingUser.email}, secret_key, {expiresIn: '120s'});
+    const token = jwt.sign({ userId: existingUser.id, email: existingUser.email}, secret_key, {expiresIn: '3h'});
 
     // Retorna o token
     console.log('token gerado: ', token);
