@@ -20,5 +20,3 @@ export async function connect() {
     // Obtém uma conexão
     return global.connection.connect();
 };
-
-postgresql://postgres:CbWryqWRNZxHEeKkXeoZXascJHMadVNr@autorack.proxy.rlwy.net:18706/railway
