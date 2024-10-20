@@ -6,7 +6,7 @@ const { Pool } = pkg;
 dotenv.config();
 
 // Constrói a string de conexão com o postgresql manualmente
-const connectionString = 'postgresql://postgres:422618@localhost:5432/users';
+const connectionString = process.env.DATABASE_URL;
 
 export async function connect() {
     // Verifica se já existe uma conexão globalmente
@@ -20,3 +20,5 @@ export async function connect() {
     // Obtém uma conexão
     return global.connection.connect();
 };
+
+postgresql://postgres:CbWryqWRNZxHEeKkXeoZXascJHMadVNr@autorack.proxy.rlwy.net:18706/railway
