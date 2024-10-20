@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 
 export const corsOpitions = {
-    origin: ['http://localhost:3000', 'https://mira-flix-nextjs.vercel.app'],
+    origin: ['http://localhost:3000', 'https://mira-flix-frontend.vercel.app'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     optionsSuccessStatus: 200
 }
