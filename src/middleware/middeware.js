@@ -4,6 +4,7 @@ import cors from 'cors';
 export const corsOpitions = {
     origin: ['http://localhost:3000', 'https://mira-flix-frontend.vercel.app'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
     optionsSuccessStatus: 200
 }
 
