@@ -5,7 +5,7 @@ export const corsOpitions = {
     origin: [
         'http://localhost:3000', 
         'https://mira-flix-frontend.vercel.app', 
-        'https://mira-flix-frontend-git-dev-oandmirandas-projects.vercel.app'  // Adicione essa URL
+        'https://mira-flix-frontend-git-dev-oandmirandas-projects.vercel.app'
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
