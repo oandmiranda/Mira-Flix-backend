@@ -38,4 +38,8 @@ router.delete('/clientes/:id', async (req, res) => {
     res.sendStatus(204); // "204" é o código que confirma a exclusão do registro
 });
 
+router.get("/test", async (req, res) => {
+    res.json('a api está funcionando, mas o database não')
+})
+
 export default router;
